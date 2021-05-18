@@ -1,0 +1,33 @@
+Linux Interview Question : 
+Uptime : uptime command 
+how to check the RedHat Verion : cat /etc/redhat-release
+Install Packages : rpm - RHEL  and yum 
+
+How to change the user Password : 
+Passwd 
+
+Difference between umask and Ulimit 
+
+umask : 
+default permission when file is created : Access: (0644/-rw-r--r--)
+default permission when directory is created : (0755/drwxr-xr-x)
+
+Number	Permission
+4	read
+2	write
+1	execute
+
+umask set the default permission for all the files that will be created in future. 
+https://www.liquidweb.com/kb/what-is-umask-and-how-to-use-it-effectively
+
+umask 022 
+
+
+this will delet the 666-022 : 644 and 777-022 : 755 
+644 to files 
+755 to folders/dire
+
+ 
+
+
+

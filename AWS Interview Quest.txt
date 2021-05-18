@@ -1,0 +1,297 @@
+1. Basic AWS S3 commands : 
+a. aws s3 ls --profile=
+b. aws s3 cp Local S3URI 
+c. aws s3 mv Local S3URI
+ aws s3
+mb - create s3 Bucket 
+rb - delete s3 Bucket 
+website - set the website settings for S3 
+
+
+
+presign - create a presigned URL so that user can get the data with http get 
+
+LocalPath and S3Uri.
+
+--recursive - for multiple files 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+How do you protect the data at REST and data i Transit in AWS ? 
+
+EC2 
+
+1. Use Private VPC - so that you have a seprate Network for your infra 
+2. Use a Subnets within VPC to isolate the APplication DB and Public Access Tire.  DB in Private Subnet,App Server and other in Public Subnet 
+3. Traffic COntrol - 
+SG to blocked and you allow specific Ports 
+Subnet with NAT in Public Subnet/ Bastion Host in Public Subnet. 
+4. Within VPC Network COntol : You can use VPC Endpoint. This will allow the services to access EC2 Instance within VPC and all the network traffic will flow within AWS. It will not go out of  the VPC. 
+ How : Yon can create an End point for EC2 and then attch VPC End point Policy. 
+VPC End point Policy : 
+a. The principal that can perform actions.
+b. The actions that can be performed.
+c. The resource on which the actions can be performed. 
+
+EBS Encryption : 
+You can create encrypted EBS Vol. and attach that to the EC2 instance. That way Data will be encrypted. 
+Which Data will be encrypted 
+Data flow between EBS and EC2 
+at Rest 
+
+How the EBS is encrypted : It is encrypted with AWS KMS- CMK or AWS managed Key. 
+'AWS managed' is default behavior. 
+
+Encrypting the data with CKM 
+1. Create a Key 
+2. Create a Policy to allow the use of the Key 
+3. attach the Policy to the User with AmazonEC2FullAccess 
+
+Enabling Encryption by default : 
+This will allow all the EBS Vol to be encrypted by default. [if you don’t specify encrypted=true request parameter. ]
+
+* You can create an encrypted EBS VOl.
+* yuu can attache CMK to the EBS when you are creating EC2 isntance. 
+
+When the Encrypted EBS is shared with other account, they can use the same CMK or re-encrpt it with different CMK. 
+
+How Encrypt the unencrypted vol : 
+Snapshot logic. 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Encrypt the data in transit  : 
+https://wa.aws.amazon.com/wat.question.SEC_9.en.html 
+
+AWS Certificate Manager to install the Certificate on the Load balancer : 
+So that only Secured data will be passed on to target Devices. 
+
+You can create  HTTPS Listerner for the Load balaancer. This Creates SSL offload. 
+Which means the Load is off loaded from taget EC2 instances and Encryption and Decryption is done by the Load Balancer. 
+
+You can use HTTPS traffic in SG. 
+
+Use SSL/TLS to encrypt the connection to DB instance. 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+
+AWS private Link or VPC Endpoint Services : 
+
+A VPC endpoint enables private connections between your VPC and supported AWS services and VPC endpoint services powered by AWS PrivateLink
+Instances in your VPC do not require public IP addresses to communicate with resources in the service.
+ 
+Interface Endpoint and Gateway Endpoint 
+
+Gateway end point for S3 : 
+
+1. VPC: Specify the VPC in which to create the endpoint and Service Eg S3. 
+2. Endpoint Policy: Attach an endpoint policy to your endpoint that allows access to some or all of the service to which you're connecting
+3. Routing Table: Specify one or more route tables in which to create routes to the service. Route tables control the routing of traffic between your VPC and the other service. Each subnet that's associated with one of these route tables has access to the endpoint, and traffic from instances in these subnets to the service is then routed through the endpoint.
+4. S3 Bucket Policy: So you can use your S3 Bucket Policy to control the access to the bucket as well. along with VPC endpoint Policy. 
+
+So Subnet is associated with the Routing table. and That ROuting table has an Entry to the Service 
+
+Destination :::::::::::::::::::::Target
+pl-id of the Service  :::::::::::VPC ID
+
+So if you try to connect to the service, Request will be routed within VPC. 
+
+
+**Interface Endpoint : You need to create SG for Interface end point. 
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxX
+
+
+How to secure the Data in S3 :
+In Transit 
+AT Rest 
+
+In Transt : You need to secure the data using client side encryption. SO the application should have the logic to secure the data. 
+At Rest: you can use the S3 KMS 
+SSE-S3 : S3 managed key 
+SSE-KMS: using the key Stored in KMS CMK- Customer Master Key. 
+SSE-C: C-Customer PROVIDED key.   
+
+You can encrypt the bucket using AWS Default Encryption or you can use AWS KMS - CMK 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+
+AWS Load Balancing : 
+
+Elastic Load Balancing automatically distributes your incoming traffic across multiple targets, such as EC2 instances, containers, and IP addresses, in one or more Availability Zones.
+
+one or more AZ is important. 
+
+Monitors the health and only route the traffic to healthy Hosts. 
+
+
+Load Balancer has LISTENERS : in Target Group. 
+
+*** Registering the Load balancer for the AZ is imp. 
+When you enable an Availability Zone for your load balancer, Elastic Load Balancing creates a load balancer node in the Availability Zone. If you register targets in an Availability Zone but do not enable the Availability Zone, these registered targets do not receive traffic
+ 			
+
+****** Cross-zone load balancing: 
+Always enabled by default. : Application LB
+Always disabled by default : Network LB and Classic 
+ 
+Enabled :
+Traffic is distributed among all the nodes in the LB in both AZ. 
+Disabled
+Traffic is distributed 50 - 50 among AZ and further divided among Targets. So AZ with less targets get high pressure. 
+
+***Pre-warm Load Balancer if you expect sudden surge in the traffic.  
+
+Ellements in AutoScaling and Load Balancing 
+
+Which one you  create : 
+1. AMI : You must have AMI with you : 
+2. You can create an Autoscaling Group or You can start with Launch Configuration
+If you start with Launch Configuration, You can create ASG 
+If you start with ASG, You can choose between Launch Template / Configuration 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Which type of EC2 instances we are using : 
+
+m5.large - General Purpose Instance 
+r5.24xlarge - - memory optimised 
+u-9tb1.metal - memory Optimised High memory 
+x1.32x Memory Optimised
+x1e.2x memory Optimised 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx
+
+ALB ; Works in HTTP or HTTPS 
+NLB works in TCP/UDP TLS 
+
+Fix responses without Backend : ALB 
+User AUthentication : ALB 
+
+Preserve Source IP : NLB  
+  
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+DDoS : AWS Shield 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+
+ELB : Access Logs for finding out the 5XX and 4XX Errors . 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
+
+Basics of Docker 
+
+In AWS : ECS and Farget 
+
+
+So base : Host Hardware
+Host OS and Docker 
+on Top of Dockers - Containers. 
+
+You can use EC2 as a base or you can use ECS as a service to deploy the containers. 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+ 
+Basics of Ansible 
+
+ssh 
+
+Playbooks are written in YAML 
+-name:
+host: <Inventory>
+task:
+
+inventory : 
+[webServer]
+a
+b
+c
+
+[DBServers]
+a1
+b1
+c1
+
+Ansible Tower
+ 
+remove old networker rpm packages
+- yum 
+state: present/ absent 
+
+remove the file 
+- file 
+state: present/ absent 
+
+
+Copy file 
+- copy 
+
+Install package.
+- yum
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+SAP Start Stop AUtomation : 
+lambda ARN  using Data blocl 
+Role using datablock 
+created cloudwatch event rule 
+cloudwatch event taregt
+lambda permission 
+separate folder for Lambda and lambda log 
+
+data block from terrform remote state 
+for lambda arn 
+cwrole arn 
+both uses config 
+Role 
+Bucket
+key 
+region
+
+Certificate Renewal : 
+Create a Certificate in Another account 
+Create a Certificte Authority to authorise the certificate
+Export the Certificate using AWS Command : 
+Created the a Modue : 
+certificate ARN, passphrase : random_password j.query > .pem 
+aws acm export-certificate
+Import certificate  : 
+null_resource : AWS CLI 
+aws acm import-certificate
+3 different part : 
+clcert.pem. 
+chain.pem
+decrypted_key.pem
+
+
+Cloudwatch 
+
+Copy RDs Snapshot from one account to another account using AWs CLI and  
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+Important git Command 
+
+git diff to fin out the difference between branches 
+
+git stash pack your changes for post use. runs only after git add . 
+git stash save "msg" 
+git stash list 
+
+git stash apply 
+git stash pop 
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx
+
+Ansible Structure 
+2.9 
+2.1.1.0 
+
+
+/etc/ansible 
+
+ansible.cfg
+hosts - inventory, You can change the name or file. You need to mention in CFG file. / -i inventory 
+role
