@@ -295,3 +295,13 @@ Ansible Structure
 ansible.cfg
 hosts - inventory, You can change the name or file. You need to mention in CFG file. / -i inventory 
 role
+
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx
+AWS Global Services 
+
+IAM 
+S3 - S3 is global but data is regional 
+Route53
+WAF global 
+CloudFront Global
